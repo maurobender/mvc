@@ -1,5 +1,5 @@
 <?php
-	function error($text, $return = false) {
+	function error($text, $return = false, $print_backtrace = false /*TODO: Implementar un depurado de backtrace.*/) {
 		$result = '<pre class="mvc-error">' . $text . '</pre>';
 		
 		if($return)

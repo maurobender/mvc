@@ -5,8 +5,10 @@
 		protected $url;
 		protected $controller;
 		protected $action;
+		
 		protected $data;
 		protected $params;
+		protected $named;
 		
 		protected $defaul_controller;
 		protected $defaul_action;
@@ -56,17 +58,31 @@
 			$result['params'] = array();
 			$result['named'] = array();
 			for($i = 2; $i < sizeof($temp); $i++) {
-				$result['params'][] = $temp[$i];
+				preg_match('/(.*):(.*)/', $temp[$i], $named);
+				
+				if(sizeof($named) == 3) {
+					$result['named'][$named[1]] = $named[2];
+				} else {
+					$result['params'][] = $temp[$i];
+				}
 			}
 			$this->params = $result['params'];
+			$this->named = $result['named'];
 			
 			return $result;
 		}
 		
+		/**
+		* Está función carga un controlador y lo incializa con los parametross
+		* indicados
+		* @param $url Un array que contiene el controlador a cargar.
+		* @return @b true en caso de que se haya podido cargar correctamente
+		* el controlador, o @b false en caso contrario.
+		*/
 		protected function __loadController($url) {
 			$controller = Core::camelize($url['controller']);
 			
-			if(Core::Import('Controller', $controller) === false)
+			if(Core::import('Controller', $controller) === false)
 				return false;
 			
 			$controller_class = $controller . 'Controller';
@@ -74,6 +90,7 @@
 			$this->controller = new $controller_class;
 			$this->controller->action = $this->action;
 			$this->controller->params = $this->params;
+			$this->controller->named = $this->named;
 			$this->controller->data = $this->data;
 			
 			return true;

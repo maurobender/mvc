@@ -1,1 +1,35 @@
+# Ignoring backup files
 *~
+
+# Ignoring kdevelop4 project files
+*.kdev4
+
+# Ignoring vim restore files
+*.swp
+
+# Ignoring kde4 .directory files
+.directory
+
+# Ignoring user defined controllers, models and views
+controllers/*
+!controllers/empty
+
+models/*
+!models/empty
+
+views/*
+!views/empty
+
+views/layouts/*
+!views/layouts/empty
+!views/layouts/default.php
+
+# Ignoring user files in webroot
+webroot/js/*
+!webroot/js/empty
+
+webroot/img/*
+!webroot/img/empty
+
+webroot/css/*
+!webroot/css/empty

@@ -1,7 +1,7 @@
 <?php
 	include_once('core/core.php');
 	
-	Core::Init();
+	Core::init();
 	
 	$dispatcher = new Dispatcher();
 	$dispatcher->dispatch();

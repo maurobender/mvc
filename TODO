@@ -1,0 +1,9 @@
+- Controller:
+
+- Models:
+	* Hacer funcionar los modelos.
+	* Los modelos crean las variables de sus tablas automaticamente.
+
+- Views:
+	* Agregar elementos a las vistas.
+	* Agregar el title_for_layout.

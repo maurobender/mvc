@@ -1,15 +1,31 @@
 <?php
 	class Controller {
-		protected $name;
-		
+		protected $name = null;
 		var $action;
-		var $params;
-		var $data;
 		
-		var $layout = 'default';
+		var $params = array();
+		var $named  = array();
+		var $data   = array();
+		
+		var $layout   = 'default';
 		var $viewVars = array();
 		
-		var $models;
+		var $db_source = 'default';
+		var $models = array();
+		
+		public function __construct() {
+			if(empty($this->name)) {
+				// TODO: Tratamos de cargarlo desde el nombre de la clase (Sólo funciona en PHP > 5).
+			}
+			
+			// Importamos los modelos que vamos a usar;
+			foreach($this->models as $model) {
+				Core::import('Model', $model);
+				
+				$this->{$model} = new $model();
+			}
+			
+		}
 		
 		function beforeAction() {
 		}
@@ -22,10 +38,16 @@
 		* @return Se retorna true en caso de que la ejecución haya sido exitosa,
 		* false en otro caso.
 		*/
-		function execute() {
+		function execute($action = null, $params = array()) {
+			if($action == null)
+				$action = $this->action;
+			
+			$params = array_merge($this->params, $params);
+			
+			
 			// Si la acción no está definida entonces mostramos un error y terminamos.
-			if(!method_exists($this, $this->action)) {
-				error(preg_replace(array('/%CONTROLLER%/', '/%NAME%/', '/%ACTION%/'), array($this->name . 'Controller', $this->name, $this->action), Error::$missing_action));
+			if(!method_exists($this, $action)) {
+				error(preg_replace(array('/%CONTROLLER%/', '/%NAME%/', '/%ACTION%/'), array($this->name . 'Controller', $this->name, $action), Error::$missing_action));
 				return false;
 			}
 			
@@ -33,14 +55,16 @@
 			$this->beforeAction();
 			
 			// Ejecutamos al acción.
-			$this->{$this->action}();
+			call_user_func_array(array(&$this, $action), $params);
+			//$this->{$this->action}();
 			
 			// Ejecutamos el callback afterAction después de llamar a la acción.
 			$this->afterAction();
 			
 			// Importamos la clase View
-			Core::Import('Core', 'View');
+			Core::import('Core', 'View');
 			$view = new View($this);
+			$view->viewVars = $this->viewVars;
 			
 			// Mostramos la vista para la acción actual.
 			if(($viewRendered = $view->render($this->action, $this->layout)) !== false)

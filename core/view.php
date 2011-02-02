@@ -1,15 +1,20 @@
 <?php
 	class View {
 		var $layout = 'default';
+		var $layoutVars = array();
+		
 		var $viewFolder = null;
 		var $viewVars = array();
+		
+		var $controller = null;
 		
 		public function __construct(&$controller) {
 			foreach($controller->viewVars as $var_name => $var_value) {
 				$this->{$var_name} = $var_value;
 			}
 			
-			$this->viewFolder = VIEWS_FOLDER . DS . Core::Camelize($controller->name);
+			$this->controller = $controller;
+			$this->viewFolder = VIEWS_FOLDER . DS . Core::underscore($controller->name);
 		}
 		
 		public function render($action, $layout = null) {
