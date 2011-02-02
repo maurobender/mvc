@@ -14,7 +14,7 @@
 			}
 			
 			$this->controller = $controller;
-			$this->viewFolder = VIEWS_FOLDER . DS . Core::underscore($controller->name);
+			
 		}
 		
 		public function render($action, $layout = null) {
@@ -24,8 +24,8 @@
 			}
 			
 			// Chequeamos que el archivo de la vista exista
-			$view = $this->viewFolder . DS . $action . '.php';
-			if(file_exists($view)) {
+			$view = $this->_getViewFile($action);
+			if($view !== false) {
 				$result = $this->_render($view, $this->viewVars);
 			} else {
 				$result = error(preg_replace(array('/%ACTION%/', '/%VIEW_FILE%/', '/%VIEW_FOLDER%/'), array($action, $action . '.php', $this->viewFolder), Error::$missing_view), true);
@@ -46,14 +46,40 @@
 			);
 			
 			// Chequeamos que el archivo de la layout exista.
-			$layoutFile = LAYOUTS_FOLDER . DS . $layout . '.php';
-			if(file_exists($layoutFile)) {
+			$layoutFile = $this->_getLayoutFile($layout);
+			if($layoutFile !== false) {
 				$result = $this->_render($layoutFile, $layoutVars);
 			} else {
 				$result = error(preg_replace(array('/%LAYOUT%/', '/%LAYOUT_FILE%/', '/%LAYOUTS_FOLDER%/'), array($layout, $layout . '.php', LAYOUTS_FOLDER), Error::$missing_layout), true);
 			}
 			
+			
 			return $result;
+		}
+		
+		
+		protected function _getViewFile($action) {
+			$view = CORE_VIEWS_FOLDER . DS . Core::underscore($this->controller->name) . DS . $action . '.php';
+			if(file_exists($view))
+				return $view;
+			
+			$view = VIEWS_FOLDER . DS . Core::underscore($this->controller->name) . DS . $action . '.php';
+			if(file_exists($view))
+				return $view;
+			
+			return false;
+		}
+		
+		protected function _getLayoutFile($layout) {
+			$layout = CORE_LAYOUTS_FOLDER . DS . $layout . '.php';
+			if(file_exists($layout))
+				return $layout;
+			
+			$layout = LAYOUTS_FOLDER . DS . $layout . '.php';
+			if(file_exists($layout))
+				return $layout;
+			
+			return false;
 		}
 		
 		

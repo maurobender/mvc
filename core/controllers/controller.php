@@ -1,6 +1,6 @@
 <?php
 	class Controller {
-		protected $name = null;
+		var $name = null;
 		var $action;
 		
 		var $params = array();
@@ -15,7 +15,8 @@
 		
 		public function __construct() {
 			if(empty($this->name)) {
-				// TODO: Tratamos de cargarlo desde el nombre de la clase (Sólo funciona en PHP > 5).
+				if(function_exists('get_class'))
+					$this->name = str_replace('Controller', '', get_class($this));
 			}
 			
 			// Importamos los modelos que vamos a usar;
@@ -61,8 +62,7 @@
 			// Ejecutamos el callback afterAction después de llamar a la acción.
 			$this->afterAction();
 			
-			// Importamos la clase View
-			Core::import('Core', 'View');
+			// Creamos la vista
 			$view = new View($this);
 			$view->viewVars = $this->viewVars;
 			

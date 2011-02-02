@@ -16,9 +16,14 @@ controllers/*
 
 models/*
 !models/empty
+!models/dbsources
+
+models/dbsources/*
+!models/dbsources/empty
 
 views/*
 !views/empty
+!views/layouts
 
 views/layouts/*
 !views/layouts/empty

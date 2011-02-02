@@ -13,7 +13,7 @@
 		
 		var $__name = null;
 		var $__table = null;
-		vard $__db_source = null;
+		var $__db_source = null;
 		
 		function __construct($table = null, $db_source = null) {
 			// Establecemos el nombre del modelo, que se carga desde la variables
@@ -22,8 +22,8 @@
 			// usando la función getClass(class) (la cual sólo funciona en PHP > 5).
 			if($this->name == null) {
 				// Esto solo funciona para PHP > 5
-				if(function_exists('getClass'))
-					$this->__name = getClass($this);
+				if(function_exists('get_class'))
+					$this->name = get_class($this);
 			} else {
 				$this->__name = $this->name;
 			}
@@ -41,7 +41,7 @@
 				$this->__db_source = $this->db_source;
 			
 			// Cargamos el manejador de Fuentes de datos
-			Core::import('Core', 'DbSourcesManager');
+			Core::import('Core', 'Models/DbSourcesManager');
 			
 			// Obtenemos la fuente de datos que haya configurado el usuario.
 			$this->_db = DbSourcesManager::getDbSource($this->db_source);
