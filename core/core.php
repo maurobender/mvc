@@ -10,22 +10,29 @@
 			define('CONTROLLERS_FOLDER', ROOT . DS . 'controllers');
 			define('VIEWS_FOLDER', ROOT . DS . 'views');
 			define('MODELS_FOLDER', ROOT . DS . 'models');
-			define('WEBROOT_FOLDER', ROOT . DS . 'webroot');
 			
 			define('CORE_CONTROLLERS_FOLDER', CORE_FOLDER . DS . 'controllers');
 			define('CORE_MODELS_FOLDER', CORE_FOLDER . DS . 'models');
 			define('CORE_VIEWS_FOLDER', CORE_FOLDER . DS . 'views');
 			
 			define('LAYOUTS_FOLDER', VIEWS_FOLDER . DS . 'layouts');
+			define('HELPERS_FOLDER', VIEWS_FOLDER . DS . 'helpers');
 			define('DBSOURCES_FOLDER', MODELS_FOLDER . DS . 'dbsources');
 			
 			define('CORE_LAYOUTS_FOLDER', CORE_VIEWS_FOLDER . DS . 'layouts');
+			define('CORE_HELPERS_FOLDER', CORE_VIEWS_FOLDER . DS . 'helpers');
 			define('CORE_DBSOURCES_FOLDER', CORE_MODELS_FOLDER . DS . 'dbsources');
 			
-			define('IMG_FOLDER', WEBROOT_FOLDER . DS . 'img');
-			define('JS_FOLDER', WEBROOT_FOLDER . DS . 'js');
-			define('CSS_FOLDER', WEBROOT_FOLDER . DS . 'css');
-			define('FILES_FOLDER', WEBROOT_FOLDER . DS . 'files');
+			define('WEBROOT_FOLDER', ROOT . DS . 'webroot');
+			
+			// Urls
+			define('APP_BASE_URL', dirname($_SERVER['PHP_SELF']));
+			define('APP_ABSOLUTE_URL', 'http://' . $_SERVER['SERVER_NAME'] . APP_BASE_URL);
+			define('WEBROOT_URL', APP_ABSOLUTE_URL . '/webroot');
+			define('IMG_URL', WEBROOT_URL . '/img');
+			define('JS_URL', WEBROOT_URL . '/js');
+			define('CSS_URL', WEBROOT_URL . '/css');
+			define('FILES_URL', WEBROOT_URL . '/files');
 			
 			self::_loadMainClasses();
 			self::_loadConfig();
@@ -41,6 +48,7 @@
  			include_once(CORE_MODELS_FOLDER . DS . 'model.php');
  			include_once(CORE_DBSOURCES_FOLDER . DS . 'db_source.php');
  			include_once(CORE_VIEWS_FOLDER . DS . 'view.php');
+ 			include_once(CORE_HELPERS_FOLDER . DS . 'helper.php');
 		}
 		
 		static private function _loadConfig() {
@@ -99,7 +107,7 @@
 						include_once(CONFIG_FOLDER . DS . $config_file);
 						$result = true;
 					} else {
-						Error::StandardError('MISSING_DBSOURCE', array('dbsource' => $name));
+						//TODO Imprimir error.
 					}
 					
 					break;
@@ -115,9 +123,23 @@
 						include_once(CORE_DBSOURCES_FOLDER . DS . $dbs_file);
 						$result = true;
 					} else {
-						//TODO Imprimir error.
+						Error::StandardError('MISSING_DBSOURCE', array('dbsource' => $name));
 					}
+					break;
+				case 'Helper':
+					$helper_file  = self::underscore($name) . '.php';
 					
+					if(file_exists(HELPERS_FOLDER . DS . $helper_file)) {
+						// Buscamos el datasource en los datasources definidos en el core.
+						include_once(HELPERS_FOLDER . DS . $helper_file);
+						$result = true;
+					} elseif (file_exists(CORE_HELPERS_FOLDER . DS . $helper_file)) {
+						// Buscamos el datasource en los datasources definidos por el usuario.
+						include_once(CORE_HELPERS_FOLDER . DS . $helper_file);
+						$result = true;
+					} else {
+						Error::StandardError('MISSING_HELPER', array('helper' => $name));
+					}
 					break;
 				default:
 					error('Can\'t find the library ' . $from);

@@ -24,10 +24,13 @@ models/dbsources/*
 views/*
 !views/empty
 !views/layouts
+!views/helpers
+
+views/helpers/*
+!views/helpers/empty
 
 views/layouts/*
 !views/layouts/empty
-!views/layouts/default.php
 
 # Ignoring user files in webroot
 webroot/js/*

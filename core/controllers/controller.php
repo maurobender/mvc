@@ -10,8 +10,10 @@
 		var $layout   = 'default';
 		var $viewVars = array();
 		
+		var $helpers = array('Html');
 		var $db_source = 'default';
 		var $models = array();
+		
 		
 		public function __construct() {
 			if(empty($this->name)) {
@@ -63,7 +65,8 @@
 			
 			// Creamos la vista
 			$view = new View($this);
-			$view->viewVars = $this->viewVars;
+			$view->setVars($this->viewVars);
+			$view->addHelpers($this->helpers);
 			
 			// Mostramos la vista para la acción actual.
 			if(($viewRendered = $view->render($this->action, $this->layout)) !== false)

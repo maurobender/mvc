@@ -1,12 +1,13 @@
 <?php
 	class View {
-		var $layout = 'default';
-		var $layoutVars = array();
+		public $controller = null;	
+		public $layout = 'default';
 		
-		var $viewFolder = null;
-		var $viewVars = array();
+		protected $_helpers = array();
+		protected $_layoutVars = array();
+		protected $_viewVars = array();
+		protected $_scripts = array();
 		
-		var $controller = null;
 		
 		public function __construct(&$controller) {
 			foreach($controller->viewVars as $var_name => $var_value) {
@@ -17,16 +18,44 @@
 			
 		}
 		
+		public function setVars(array $vars, $append = false) {
+			if($append) {
+				$this->_viewVars = array_merge($this->_viewVars, $var );
+			} else {
+				$this->_viewVars = $vars;
+			}
+		}
+		
+		public function addHelpers($helper) {
+			if(is_array($helper)) {
+				$this->_helpers = array_merge($this->_helpers, $helper);
+			} else {
+				array_push($this->_helpers, $helper);
+			}
+		}
+		
+		public function addScript($script) {
+			array_push($this->_scripts, $script);
+		}
+		
 		public function render($action, $layout = null) {
 			// Si no nos pasan una layout usamos la que ya está definida por default.
 			if($layout == null) {
 				$layout = $this->layout;
 			}
 			
+			// Creamos todos los helpers
+			foreach($this->_helpers as $helper) {
+				if(Core::Import('Helper', $helper)) {
+					$helper_class = $helper . 'Helper';
+					$this->{$helper} = new $helper_class($this);
+				}
+			}
+			
 			// Chequeamos que el archivo de la vista exista
 			$view = $this->_getViewFile($action);
 			if($view !== false) {
-				$result = $this->_render($view, $this->viewVars);
+				$result = $this->_render($view, $this->_viewVars);
 			} else {
 				$result = Error::StandardError('MISSING_VIEW', array('action' => $action, 'controller' => $this->controller->name), true);
 			}
@@ -42,7 +71,7 @@
 		protected function _renderLayout($layout, $content) {
 			$layoutVars = array_merge(
 				array('content_for_layout' => $content),
-				$this->viewVars
+				$this->_viewVars
 			);
 			
 			// Chequeamos que el archivo de la layout exista.
