@@ -35,6 +35,7 @@
 			// Load the main classes
 			include_once(CORE_FOLDER . DS . 'common.php');
  			include_once(CORE_FOLDER . DS . 'dispatcher.php');
+ 			include_once(CORE_FOLDER . DS . 'error.php');
  			include_once(CORE_CONTROLLERS_FOLDER . DS . 'controller.php');
  			include_once(CORE_MODELS_FOLDER . DS . 'db_sources_manager.php');
  			include_once(CORE_MODELS_FOLDER . DS . 'model.php');
@@ -66,14 +67,14 @@
 					$controller_class = $name . 'Controller';
 					$controller_file = self::underscore($controller_class) . '.php';
 					
-					if(file_exists(CORE_CONTROLLERS_FOLDER . DS . $controller_file)) {
-						include_once(CORE_CONTROLLERS_FOLDER . DS . $controller_file);
-						$result = true;
-					} elseif(file_exists(CONTROLLERS_FOLDER . DS . $controller_file)) {
+					if(file_exists(CONTROLLERS_FOLDER . DS . $controller_file)) {
 						include_once(CONTROLLERS_FOLDER . DS . $controller_file);
 						$result = true;
+					} elseif(file_exists(CORE_CONTROLLERS_FOLDER . DS . $controller_file)) {
+						include_once(CORE_CONTROLLERS_FOLDER . DS . $controller_file);
+						$result = true;
 					} else {
-						//TODO Imprimir error.
+						Error::StandardError('MISSING_CONTROLLER', array('controller' => $name));
 					}
 					
 					break;
@@ -81,14 +82,14 @@
 					$model_class = $name;
 					$model_file = self::underscore($name) . '.php';
 					
-					if(file_exists(CORE_MODELS_FOLDER . DS . $model_file)) {
-						include_once(CORE_MODELS_FOLDER . DS . $model_file);
-						$result = true;
-					} elseif(file_exists(MODELS_FOLDER . DS . $model_file)) {
+					if(file_exists(MODELS_FOLDER . DS . $model_file)) {
 						include_once(MODELS_FOLDER . DS . $model_file);
 						$result = true;
+					} elseif(file_exists(CORE_MODELS_FOLDER . DS . $model_file)) {
+						include_once(CORE_MODELS_FOLDER . DS . $model_file);
+						$result = true;
 					} else {
-						//TODO Imprimir error.
+						Error::StandardError('MISSING_MODEL', array('model' => $name));
 					}
 					
 					break;
@@ -98,20 +99,20 @@
 						include_once(CONFIG_FOLDER . DS . $config_file);
 						$result = true;
 					} else {
-						//TODO Imprmir error.
+						Error::StandardError('MISSING_DBSOURCE', array('dbsource' => $name));
 					}
 					
 					break;
 				case 'DbSource':
 					$dbs_file  = self::underscore($name) . '.php';
 					
-					if(file_exists(CORE_DBSOURCES_FOLDER . DS . $dbs_file)) {
+					if(file_exists(DBSOURCES_FOLDER . DS . $dbs_file)) {
 						// Buscamos el datasource en los datasources definidos en el core.
-						include_once(CORE_DBSOURCES_FOLDER . DS . $dbs_file);
-						$result = true;
-					} elseif (file_exists(DBSOURCES_FOLDER . DS . $dbs_file)) {
-						// Buscamos el datasource en los datasources definidos por el usuario.
 						include_once(DBSOURCES_FOLDER . DS . $dbs_file);
+						$result = true;
+					} elseif (file_exists(CORE_DBSOURCES_FOLDER . DS . $dbs_file)) {
+						// Buscamos el datasource en los datasources definidos por el usuario.
+						include_once(CORE_DBSOURCES_FOLDER . DS . $dbs_file);
 						$result = true;
 					} else {
 						//TODO Imprimir error.

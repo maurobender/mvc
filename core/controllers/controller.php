@@ -21,9 +21,8 @@
 			
 			// Importamos los modelos que vamos a usar;
 			foreach($this->models as $model) {
-				Core::import('Model', $model);
-				
-				$this->{$model} = new $model();
+				if(Core::import('Model', $model))
+					$this->{$model} = new $model();
 			}
 			
 		}
@@ -48,7 +47,7 @@
 			
 			// Si la acción no está definida entonces mostramos un error y terminamos.
 			if(!method_exists($this, $action)) {
-				error(preg_replace(array('/%CONTROLLER%/', '/%NAME%/', '/%ACTION%/'), array($this->name . 'Controller', $this->name, $action), Error::$missing_action));
+				Error::StandardError('MISSING_ACTION', array('controller' => $this->name, 'action' => $action));
 				return false;
 			}
 			

@@ -28,7 +28,7 @@
 			if($view !== false) {
 				$result = $this->_render($view, $this->viewVars);
 			} else {
-				$result = error(preg_replace(array('/%ACTION%/', '/%VIEW_FILE%/', '/%VIEW_FOLDER%/'), array($action, $action . '.php', $this->viewFolder), Error::$missing_view), true);
+				$result = Error::StandardError('MISSING_VIEW', array('action' => $action, 'controller' => $this->controller->name), true);
 			}
 			
 			// Si hay una layout para usar, la randerizamos.
