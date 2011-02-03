@@ -41,3 +41,4 @@ webroot/img/*
 
 webroot/css/*
 !webroot/css/empty
+!webroot/css/mvc_default.css

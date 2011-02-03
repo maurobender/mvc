@@ -1,3 +1,10 @@
-<p><b>Hola </b>
-<a href="<?php echo $this->Html->url(array('controller' => 'users', 'action' => 'view'), array('1'), array('name' => 'mauro', 'dni' => '33613217'), true); ?>">Mauro</a>
-</p>
+<div class="mvc-header">
+	MVC Framework 0.1
+</div>
+
+<div class="mvc-main">
+</div>
+
+<div class="mvc-footer">
+	MVC Framework 0.1 - Author: <a href="mailto:maurobender@gmail.com">Mauro E. Bender</a>
+</div>

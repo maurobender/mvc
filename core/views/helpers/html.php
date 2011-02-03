@@ -1,29 +1,33 @@
 <?php
 	class HtmlHelper extends Helper {
 		protected $_commonTags = array(
-			'stylesheet' => '<link href="%1" rel="Stylesheet" type="text/css" />',
+			'stylesheet' => '<link rel="stylesheet" type="text/css" href="%1" />',
 			'javascript' => '<script src="%1" type="text/javascript" language="Javascript"></script>'
 		);
 		
-		public function css($name, array $options) {
-			$css_path = CSS_FOLDER . DS . $name . '.css';
-			$result = str_replace('%1', $css_path, $_commonTags);
+		public function css($name, array $options = array()) {
+			$css_path = CSS_URL . '/' . $name . '.css';
+			$result = str_replace('%1', $css_path, $this->_commonTags['stylesheet']);
 			
-			if(in_array('inline', $options) && $options['inline']) {
-				$this->_view->addScript($result);
-			} else {
+			$options = array_merge(array('inline' => true), $options);
+			
+			if(isset($options['inline']) && $options['inline']) {
 				return $result;
+			} else {
+				$this->_view->addScript($result);
 			}
 		}
 		
-		public function js($name, array $options) {
-			$jss_path = JS_FOLDER . DS . $name . '.js';
-			$result = str_replace('%1', $js_path, $_commonTags);
+		public function js($name, array $options = array()) {
+			$jss_path = JS_URL . DS . $name . '.js';
+			$result = str_replace('%1', $js_path, $this->_commonTags['javascript']);
+			
+			$options = array_merge(array('inline' => true), $options);
 			
 			if(in_array('inline', $options) && $options['inline']) {
-				$this->_view->addScript($result);
-			} else {
 				return $result;
+			} else {
+				$this->_view->addScript($result);
 			}
 		}
 		

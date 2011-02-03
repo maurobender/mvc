@@ -1,0 +1,17 @@
+body {
+	width: 1000px;
+	margin: 0 auto;
+}
+
+.mvc-header {
+	background-color: #DDDDDD;
+	font-size: 35px;
+	height: 50px;
+}
+
+.mvc-footer {
+	color: #999999;
+	font-size: 12px;
+	text-align: center;
+	margin-top: 30px;
+}
