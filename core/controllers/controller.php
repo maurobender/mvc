@@ -14,7 +14,6 @@
 		var $db_source = 'default';
 		var $models = array();
 		
-		
 		public function __construct() {
 			if(empty($this->name)) {
 				if(function_exists('get_class'))
@@ -46,11 +45,12 @@
 			
 			$params = array_merge($this->params, $params);
 			
-			
 			// Si la acción no está definida entonces mostramos un error y terminamos.
 			if(!method_exists($this, $action)) {
-				Error::StandardError('MISSING_ACTION', array('controller' => $this->name, 'action' => $action));
-				return false;
+				Core::addError(Error::StandardError('MISSING_ACTION', array('controller' => $this->name, 'action' => $action)));
+				Dispatcher::dispatchDefaultController('error');
+				exit;
+				//return false;
 			}
 			
 			// Ejecutamos el callback beforeAction antes de llamar a la acción.

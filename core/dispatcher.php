@@ -72,6 +72,14 @@
 			return $result;
 		}
 		
+		public static function dispatchDefaultController($action = 'index') {
+			Core::import('Controller', 'Default');
+			
+			$controller = new DefaultController;
+			$controller->action = $action;
+			$controller->execute();
+		}
+		
 		/**
 		* Está función carga un controlador y lo incializa con los parametross
 		* indicados

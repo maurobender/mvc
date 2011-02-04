@@ -54,10 +54,12 @@
 			
 			// Chequeamos que el archivo de la vista exista
 			$view = $this->_getViewFile($action);
+			$result = '';
 			if($view !== false) {
 				$result = $this->_render($view, $this->_viewVars);
 			} else {
-				$result = Error::StandardError('MISSING_VIEW', array('action' => $action, 'controller' => $this->controller->name), true);
+				foreach(Core::getErrors() as $error) $result .= $error;
+				$result .= Error::StandardError('MISSING_VIEW', array('action' => $action, 'controller' => $this->controller->name), array('return' => true));
 			}
 			
 			// Si hay una layout para usar, la randerizamos.
@@ -79,7 +81,11 @@
 			if($layoutFile !== false) {
 				$result = $this->_render($layoutFile, $layoutVars);
 			} else {
-				$result = error(preg_replace(array('/%LAYOUT%/', '/%LAYOUT_FILE%/', '/%LAYOUTS_FOLDER%/'), array($layout, $layout . '.php', LAYOUTS_FOLDER), Error::$missing_layout), true);
+				$result = Error::StandardError('MISSING_LAYOUT', array('layout' => $layout), true);
+				
+				$layoutVars['content_for_layout'] = $result;
+				$layoutFile = $this->_getLayoutFile('default');
+				$result = $this->_render($layoutFile, $layoutVars);
 			}
 			
 			

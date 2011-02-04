@@ -1,6 +1,9 @@
 <?php
-	function error($text, $return = false, $print_backtrace = false /*TODO: Implementar un depurado de backtrace.*/) {
-		$result = '<pre class="mvc-error">' . $text . '</pre>';
+	function error($text, $type = 'ERROR', $return = false, $print_backtrace = false /*TODO: Implementar un depurado de backtrace.*/) {
+		if($type == 'ERROR')
+			$result = '<div class="mvc-error"><div class="mvc-error-title">Error</div><pre>' . $text . '</pre></div>';
+		else
+			$result = '<div class="mvc-warning"><div class="mvc-warning-title">Warning</div><pre>' . $text . '</pre></div>';
 		
 		if($return)
 			return $result;
@@ -9,7 +12,7 @@
 	}
 	
 	function debug($var) {
-		echo '<pre class="mvc-error">' . print_r($var, true) . '</pre>';
+		echo '<div class="mvc-warning"><div class="mvc-warning-title">Debug</div><pre>' . print_r($var, true) . '</pre></div>';
 	}
 	
 ?>

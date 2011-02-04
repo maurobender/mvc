@@ -2,8 +2,8 @@
 	class Error {
 		protected static $_standardErrors = array(
 			'MISSING_CONTROLLER' => "
-Can't find the file for the controller %CONTROLLER%.
-Please create the file %CONTROLLER_FILE% insde the controllers folder with
+Can't find the file for the controller <b>%CONTROLLER%</b>.
+Please create the file <b>%CONTROLLER_FILE%</b> insde the controllers folder with
 the next content:
 &lt;?php
 	class %CONTROLLER% extends Controller {
@@ -37,15 +37,18 @@ Please define the action <b>%ACTION%</b> as next:
 		...
 	}
 ?&gt;"	, 'MISSING_LAYOUT' => "
-Can't find the layout %LAYOUT%, please create a file named %LAYOUT_FILE% inside
-the %LAYOUTS_FOLDER% folder."
+Can't find the layout <b>%LAYOUT%</b>, please create a file named <b>%LAYOUT_FILE%</b> inside
+the <b>'views/layouts'</b> folder."
 			, 'MISSING_DBSOURCE' => "
 Can't find the file for the dbsource <b>%DBSOURCE%</b>.
 Please create the file <b>%DBSOURCE_FILE%</b> inside the models folder."
+			, 'MISSING_CONFIG' => "
+Can't find the config file <b>%CONFIG%</b>, please create that file inside the <b>config</b> folder."
 		);
 		
-		static function StandardError($error_type, $error_params = array(), $return = false) {
+		static function StandardError($error_type, $error_params = array(), array $options = array()) {
 			$result = '';
+			$options = array_merge(array('return' => false, 'type' => 'ERROR'), $options);
 			switch($error_type) {
 				case 'MISSING_CONTROLLER':
 					$search_params = array(
@@ -84,6 +87,12 @@ Please create the file <b>%DBSOURCE_FILE%</b> inside the models folder."
 					
 					$result =  preg_replace($search_params, $replace_params, self::$_standardErrors[$error_type]);
 					break;
+				case 'MISSING_LAYOUT':
+					$search_params = array('/%LAYOUT%/', '/%LAYOUT_FILE%/');
+					$replace_params = array($error_params['layout'], $error_params['layout'] . '.php');
+					
+					$result =  preg_replace($search_params, $replace_params, self::$_standardErrors[$error_type]);
+					break;
 				case 'MISSING_MODEL':
 					$search_params = array(
 						'/%MODEL%/', '/%MODEL_FILE%/'
@@ -95,12 +104,32 @@ Please create the file <b>%DBSOURCE_FILE%</b> inside the models folder."
 					
 					$result =  preg_replace($search_params, $replace_params, self::$_standardErrors[$error_type]);
 					break;
+				case 'MISSING_DBSOURCE':
+					$search_params = array(
+						'/%DBSOURCE%/', '/%DBSOURCE_FILE%/'
+					);
+					$replace_params = array(
+						$error_params['dbsource'],
+						$error_params['dbsource'] . '.php'
+					);
+					
+					$result =  preg_replace($search_params, $replace_params, self::$_standardErrors[$error_type]);
+					break;
+				case 'MISSING_CONFIG':
+					$search_params = array(
+						'/%CONFIG%/'
+					);
+					$replace_params = array(
+						$error_params['config'] . '.php'
+					);
+					
+					$result =  preg_replace($search_params, $replace_params, self::$_standardErrors[$error_type]);
 					break;
 				default:
 					break;
 			}
 			
-			return error($result, $return);
+			return error($result, $options['type'], $options['return']);
 		}
 	}
 ?>

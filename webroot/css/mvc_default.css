@@ -15,3 +15,29 @@ body {
 	text-align: center;
 	margin-top: 30px;
 }
+
+.mvc-error {
+	background-color: #FFEBE8;
+	width: 80%;
+	margin: 5px auto;
+	border: 1px solid #DD3C10;
+	font-size: 13px;
+}
+
+.mvc-warning {
+	background-color: #ece99c;
+	width: 80%;
+	margin: 5px auto;
+	border: 1px solid #d2cb06;
+	font-size: 13px;
+}
+
+.mvc-error-title, .mvc-warning-title {
+	padding: 1px;
+	font-weight: bold;
+	border-bottom: 1px solid black;
+}
+
+.mvc-error pre, .mvc-warning pre {
+	padding: 2px 5px 5px 5px;
+}

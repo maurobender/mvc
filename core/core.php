@@ -82,7 +82,9 @@
 						include_once(CORE_CONTROLLERS_FOLDER . DS . $controller_file);
 						$result = true;
 					} else {
-						Error::StandardError('MISSING_CONTROLLER', array('controller' => $name));
+						Core::addError(Error::StandardError('MISSING_CONTROLLER', array('controller' => $name), array('return' => true)));
+						Dispatcher::dispatchDefaultController('error');
+						exit;
 					}
 					
 					break;
@@ -97,7 +99,7 @@
 						include_once(CORE_MODELS_FOLDER . DS . $model_file);
 						$result = true;
 					} else {
-						Error::StandardError('MISSING_MODEL', array('model' => $name));
+						Error::StandardError('MISSING_MODEL', array('model' => $name), array('type' => 'WARNING'));
 					}
 					
 					break;
@@ -107,7 +109,7 @@
 						include_once(CONFIG_FOLDER . DS . $config_file);
 						$result = true;
 					} else {
-						//TODO Imprimir error.
+						Error::StandardError('MISSING_CONFIG', array('config' => $name), array('type' => 'WARNING'));
 					}
 					
 					break;
@@ -123,7 +125,7 @@
 						include_once(CORE_DBSOURCES_FOLDER . DS . $dbs_file);
 						$result = true;
 					} else {
-						Error::StandardError('MISSING_DBSOURCE', array('dbsource' => $name));
+						Error::StandardError('MISSING_DBSOURCE', array('dbsource' => $name), array('type' => 'WARNING'));
 					}
 					break;
 				case 'Helper':
@@ -138,7 +140,7 @@
 						include_once(CORE_HELPERS_FOLDER . DS . $helper_file);
 						$result = true;
 					} else {
-						Error::StandardError('MISSING_HELPER', array('helper' => $name));
+						Error::StandardError('MISSING_HELPER', array('helper' => $name), array('type' => 'WARNING'));
 					}
 					break;
 				default:
@@ -158,6 +160,17 @@
 		static public function camelize($undescored) {
 			$result = preg_replace('/ /', '', ucwords(preg_replace('/_/', ' ', $undescored)));
 			return $result;
+		}
+		
+		static protected $_errors = array();
+		
+		static public function addError($error) {
+			array_push(self::$_errors, $error);
+			
+		}
+		
+		static public function getErrors() {
+			return self::$_errors;
 		}
 	}
 ?>
